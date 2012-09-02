@@ -3,6 +3,10 @@ module Devletter
   class Mail
     attr_accessor :date, :subject, :html, :text
 
+    def initialize(options = {})
+      @options = options    
+    end
+
     def build
       @date = Date.today.strftime("%y-%m-%d")
       scraper = Scraper.new
@@ -60,7 +64,44 @@ module Devletter
       @text = premailer.to_plain_text
     end
 
-    def send
+    def send addrs      
+      subject, text, html, options = @subject, @text, @html, @options
+
+      unless @mail_setup
+        if options.key? :gmail_user_name and options.key? :gmail_password
+          ::Mail.defaults do
+            delivery_method :smtp, { 
+              :address              => "smtp.gmail.com",
+              :port                 => 587,
+              :domain               => 'localhost.localdomain',
+              :user_name            => options[:gmail_user_name],
+              :password             => options[:gmail_password],
+              :authentication       => 'plain',
+              :enable_starttls_auto => true 
+            }
+          end
+        else
+          raise "Cannot setup mail"
+        end
+        @mail_setup = true
+      end
+
+      ::Mail.deliver do
+        from    '★ Devletter <noreply@hakeraj.com>'
+        to      'noreply@hakeraj.com'
+        bcc     addrs
+        subject subject
+      
+        text_part do
+          content_type 'text/plain; charset=utf-8'
+          body text
+        end
+
+        html_part do
+          content_type 'text/html; charset=utf-8'
+          body html
+        end
+      end
     end
   
     private
