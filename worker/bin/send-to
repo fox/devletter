@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+# a script to send newsletter to specified address
+# using google smtp servers
+
+if ARGV.count < 3
+  abort "usage: #{File.basename(__FILE__)} [GMAIL USER NAME] [GMAIL PASSWORD] [DESTINATION EMAIL]"
+end
+
+$LOAD_PATH << File.dirname(__FILE__) + "/../lib" 
+
+require "devletter"
+
+user_name, password, address = ARGV
+
+mail = Devletter::Mail.new :gmail_user_name => user_name, :gmail_password => password
+mail.build
+mail.send address

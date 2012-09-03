@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+
+# a tiny script to preview a newsletter in browser
+
+$LOAD_PATH << File.dirname(__FILE__) + "/../lib" 
+
+require "devletter"
+
+mail = Devletter::Mail.new
+mail.build
+
+File.open "/tmp/devletter.html", "w" do |f|
+  f.puts mail.html
+end 
+
+if RUBY_PLATFORM =~ /mac|darwin/
+  system "open /tmp/devletter.html"
+else # linux (or windows)
+  system "xdg-open /tmp/devletter.html"
+end
