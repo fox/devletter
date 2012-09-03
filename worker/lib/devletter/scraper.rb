@@ -14,7 +14,7 @@ module Devletter
     def reddit_programming num_links
       links = []
       i = 0
-      fetch_page("http://www.reddit.com/r/programming").css(".entry .title a.title").each do |a|
+      fetch_page("http://www.reddit.com/r/programming").css("#siteTable .entry .title a.title").each do |a|
         links << [a.attr("href"), a.text]    
         break if (i += 1) == num_links
       end
