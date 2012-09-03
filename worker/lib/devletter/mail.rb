@@ -18,8 +18,8 @@ module Devletter
 
         url, title, text = scraper.top_story
         b.p({ :class => "top-story" }) {
-          b << "<b>#{title}</b> &mdash; #{text}"
-          b.a "Više", :href => url 
+          b.b { b.a title, :href => url }
+          b << "&mdash; #{text}" 
         }
 
         b.h2 "Hacker News"
