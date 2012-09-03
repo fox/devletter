@@ -2,13 +2,15 @@ module Devletter
 
   class Scraper
     def top_story
-      page = fetch_page "http://www.guardian.co.uk/technology"
-      top_story = page.css(".wide-image")[0]
-      [
-        top_story.css("h3 a").attr("href").to_s, # url
-        top_story.css("h3").text.strip, # title
-        top_story.css("p")[0].text.gsub(/ By .*/, '').strip # text
-      ]
+      page = fetch_page "http://www.techmeme.com/"
+      
+      top_story = page.css("#topcol1 .ii")[0]
+
+      title = top_story.css("strong a").text
+      url = top_story.css("strong a").attr("href").to_s
+      text = top_story.text.sub(title, "").strip.gsub(/[^a-z0-9 \.!\?"'\/]/i, '')
+      
+      [ url, title, text ]
     end
 
     def reddit_programming num_links
